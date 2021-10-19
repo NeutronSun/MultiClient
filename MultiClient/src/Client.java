@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class Client {
     public static void main(String[] args) throws Exception {
-        String hostName = "127.0.0.1";
+        String hostName = Inet4Address.getLocalHost().getHostAddress();
         int portNumber = 77;
         boolean win = false;
 
@@ -14,7 +14,8 @@ public class Client {
             ServerConnection serverC = new ServerConnection(echoSocket);
             new Thread(serverC).start();
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-
+            System.out.println("Inser your username.");
+            putInServer.println(in.readLine());
             String userInput;
             while (!win && (userInput = in.readLine()) != null) {
                 putInServer.println(userInput);
