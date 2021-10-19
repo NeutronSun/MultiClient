@@ -11,10 +11,12 @@ public class Server {
 
         String userInput;
         ArrayList<Thread> threads = new ArrayList<Thread>();
+        ArrayList<ServerThread> clients = new ArrayList<ServerThread>();
         System.out.println(nToGuess);
         while (true) {
             Socket clientSocket = serverSocket.accept();
-            threads.add(new Thread(new ServerThread(clientSocket, nToGuess)));
+            clients.add(new ServerThread(clientSocket, nToGuess, clients));
+            threads.add(new Thread(clients.get(contThread)));
             threads.get(contThread).setName(String.valueOf(contThread));
             threads.get(contThread).start();
             System.out.println("Connection Accepted with cliet: " + threads.get(contThread).getName());

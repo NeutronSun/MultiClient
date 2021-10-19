@@ -11,14 +11,13 @@ public class Client {
 
             Socket echoSocket = new Socket(hostName, portNumber);
             PrintWriter putInServer = new PrintWriter(echoSocket.getOutputStream(), true);
-            BufferedReader getFromServer = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+            ServerConnection serverC = new ServerConnection(echoSocket);
+            new Thread(serverC).start();
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
             String userInput;
             while (!win && (userInput = in.readLine()) != null) {
                 putInServer.println(userInput);
-                userInput = getFromServer.readLine();
-                System.out.println(userInput);
             }
        
     }

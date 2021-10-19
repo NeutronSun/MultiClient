@@ -1,20 +1,23 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class ServerThread implements Runnable {
     private Socket socket;
     private int nToGuess;
+    public PrintWriter out;
+    private BufferedReader in;
+    private ArrayList<ServerThread> clients;
     private static int winner;
     private static boolean won = false;
 
-    ServerThread(Socket socket, int n){
+    ServerThread(Socket socket, int n, ArrayList<ServerThread> clients){
         this.socket = socket;
-        nToGuess = n;   
+        nToGuess = n;
+        this.clients = clients;   
     }
 
     public void run() {
-        PrintWriter out = null;
-        BufferedReader in = null;
         try{
 
             out = new PrintWriter(socket.getOutputStream(), true);
@@ -25,20 +28,24 @@ public class ServerThread implements Runnable {
                 if(Integer.parseInt(line) == nToGuess){
                     winner = Integer.parseInt(Thread.currentThread().getName());
                     won = true;
-                    notifyAll();
+                    alertAll(Integer.parseInt(Thread.currentThread().getName()));
+                    out.println("hai vinto brutto frocio");
                 }
-                if(won){
-                    if(winner == Integer.parseInt(Thread.currentThread().getName()))
-                    out.println("Hai vinto brutto gay");
-                    else
-                    out.println("Ha vinto " + winner + " brutto gay");
-                }
-                out.println("hai sbagliato");
                 System.out.println(line);
             }
         }
 
 
         }catch(IOException e){}
+    }
+
+    public void alertAll(int exepted){
+        System.out.println(clients.size());
+        int cont = 0;
+        for(ServerThread t : clients){
+            if(cont != exepted)
+                t.out.println(exepted + " ha vinto");
+            cont++;
+        }
     }
 }
