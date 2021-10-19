@@ -24,7 +24,7 @@ public class Server {
             threads.add(new Thread(clients.get(contThread)));
             threads.get(contThread).setName(String.valueOf(contThread));
             threads.get(contThread).start();
-            System.out.println("Connection Accepted with cliet: " + threads.get(contThread).getName());
+            System.out.println("Connection Accepted with client-" + threads.get(contThread).getName());
             contThread++;
         }
         

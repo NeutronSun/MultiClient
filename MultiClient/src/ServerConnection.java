@@ -15,9 +15,9 @@ public class ServerConnection implements Runnable {
             String s;
             try {
                 s = in.readLine();
-                System.out.println("Server: " + s);
+                System.out.println(s);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
+                System.out.println("wegweg");
                 e.printStackTrace();
             }
         }

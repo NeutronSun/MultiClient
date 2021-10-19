@@ -16,7 +16,7 @@ public class ServerThread implements Runnable {
         this.socket = socket;
         nToGuess = n;
         this.clients = clients;
-        attempts = 5;
+        attempts = 10;
     }
 
     public void run() {
@@ -24,11 +24,18 @@ public class ServerThread implements Runnable {
             out = new PrintWriter(socket.getOutputStream(), true);
         	in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             userName = in.readLine();
+            System.out.println("client-" + Thread.currentThread().getName() + " has set his username in " + userName);
+            out.println("welcome " + userName + ", good luck and having fun.\nYou have " + attempts + " attempts.");
+            out.println("Use the command /t to chat with the other player");
             newUser(Integer.parseInt(Thread.currentThread().getName()));
             String line;
             synchronized(this){
             while ((line = in.readLine()) != null) {
-                if(Integer.parseInt(line) == nToGuess){
+                if(line.startsWith("/t", 0)){
+                    publicChat(Integer.parseInt(Thread.currentThread().getName()), line.substring(3));
+                    continue;
+                }
+                else if(Integer.parseInt(line) == nToGuess){
                     alertAll(Integer.parseInt(Thread.currentThread().getName()));
                     out.println("You win!!!");
                     System.out.println(userName + ":has won the game.");
@@ -60,11 +67,22 @@ public class ServerThread implements Runnable {
         }
     }
 
+    public void publicChat(int exepted, String msg){
+        int cont = 0;
+        for(ServerThread t : clients){
+            if(cont != exepted)
+                t.out.println("<<" + userName + ">>: " + msg);
+            cont++;
+        }
+    }
+
     public void newUser(int exepted){
         int cont = 0;
         for(ServerThread t : clients) {
-            if(cont != exepted)
-                t.out.println(userName + " has joined the game");
+            if(cont != exepted){
+                t.out.println("<<Server>>: " + userName + " has joined the game");
+                t.out.println("<<Server>>: there are " + clients.size() + " players.");
+            }
             cont++;
         }
     }
