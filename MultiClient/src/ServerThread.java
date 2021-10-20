@@ -8,13 +8,15 @@ public class ServerThread implements Runnable {
     private BufferedReader in;
     private ArrayList<ServerThread> clients;
 
-    private int nToGuess;
+    private String word;
+    private String description;
     private int attempts;
     public String userName;
 
-    ServerThread(Socket socket, int n, ArrayList<ServerThread> clients){
+    ServerThread(Socket socket, String s, String ss, ArrayList<ServerThread> clients){
         this.socket = socket;
-        nToGuess = n;
+        word = s;
+        description = ss;
         this.clients = clients;
         attempts = 10;
     }
@@ -27,6 +29,7 @@ public class ServerThread implements Runnable {
             System.out.println("client-" + Thread.currentThread().getName() + " has set his username in " + userName);
             out.println("welcome " + userName + ", good luck and having fun.\nYou have " + attempts + " attempts.");
             out.println("Use the command /t to chat with the other player");
+            out.println("The Word has " + word.length() + " characters, and is " + description);
             newUser(Integer.parseInt(Thread.currentThread().getName()));
             String line;
             synchronized(this){
@@ -35,8 +38,11 @@ public class ServerThread implements Runnable {
                     publicChat(Integer.parseInt(Thread.currentThread().getName()), line.substring(3));
                     continue;
                 }
-                else if(Integer.parseInt(line) == nToGuess){
-                    String msg = (userName + " has won the game.");
+                else if(line.startsWith("/report", 0)){
+                    reportUser(line);
+                }
+                else if(line.toUpperCase().equals(word)){
+                    String msg = (userName + " has won the game: The words is " + word);
                     alertAll(Integer.parseInt(Thread.currentThread().getName()), msg);
                     out.println("You win!!!");
                     System.out.println(userName + ":has won the game.");
@@ -92,5 +98,22 @@ public class ServerThread implements Runnable {
             }
             cont++;
         }
+    }
+
+    public void reportUser(String line) throws IOException{
+        line = line.substring(8);
+        int cont = 0;
+        for(ServerThread t : clients){
+            if(t.userName.equalsIgnoreCase(line)){
+                t.out.println("<<Server>>: " + userName + " has reported you for toxic behavoir, you got banned.");
+                t.socket.close();
+                clients.remove(cont);
+                String msg = ("<<Server>>: " + userName + " has reported you " + line + " for toxic behavoir, you got banned.");
+                publicChat((clients.size()+1), msg);
+                return;
+            }
+            cont++;
+        }
+
     }
 }
