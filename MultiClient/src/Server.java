@@ -12,12 +12,13 @@ public class Server {
 
         ArrayList<Thread> threads = new ArrayList<Thread>();
         ArrayList<ServerThread> clients = new ArrayList<ServerThread>();
-        ArrayList<ServerLog> logs = new ArrayList<ServerLog>();
+        //ArrayList<ServerLog> logs = new ArrayList<ServerLog>();
+        ServerConsole console = new ServerConsole(clients);
+        new Thread(console).start();
         System.out.println(nToGuess);
         System.out.println("Waiting for user..." );
         while (true) {
             Socket clientSocket = serverSocket.accept();
-
             clients.add(new ServerThread(clientSocket, nToGuess, clients));
             //logs.add(new ServerLog(clientSocket));
             //new Thread(logs.get(contThread)).start();

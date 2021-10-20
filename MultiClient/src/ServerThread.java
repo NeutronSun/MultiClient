@@ -3,14 +3,14 @@ import java.net.*;
 import java.util.ArrayList;
 
 public class ServerThread implements Runnable {
-    private Socket socket;
+    public Socket socket;
     public PrintWriter out;
     private BufferedReader in;
     private ArrayList<ServerThread> clients;
 
     private int nToGuess;
     private int attempts;
-    private String userName;
+    public String userName;
 
     ServerThread(Socket socket, int n, ArrayList<ServerThread> clients){
         this.socket = socket;
@@ -54,7 +54,9 @@ public class ServerThread implements Runnable {
         }
 
 
-        }catch(IOException e){}
+        }catch(IOException e){
+            System.out.println(userName + " has left the game");
+        }
     }
 
     public void alertAll(int exepted){
