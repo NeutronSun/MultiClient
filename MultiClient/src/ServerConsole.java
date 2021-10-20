@@ -21,7 +21,7 @@ public class ServerConsole implements Runnable {
                     banUser(s);
                 }
             } catch (IOException e) {
-                System.out.println("wegweg");
+                System.out.println("error");
                 e.printStackTrace();
             }
         }

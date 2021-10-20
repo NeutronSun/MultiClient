@@ -20,9 +20,7 @@ public class Client {
             putInServer.println(in.readLine());
             String userInput;
             while (!win && (userInput = in.readLine()) != null) {
-
                 putInServer.println(userInput);
-
             }
             putInServer.close();
             in.close();

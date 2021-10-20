@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Server {
         public static void main(String[] args) throws IOException {
         int portNumber = 77;
-        System.out.println(Inet4Address.getLocalHost().getHostAddress());
         int nToGuess = (int)(Math.random() * 100) + 1;
         ServerSocket serverSocket = new ServerSocket(portNumber);
         int contThread = 0;
@@ -16,7 +15,10 @@ public class Server {
         ServerConsole console = new ServerConsole(clients);
         new Thread(console).start();
         System.out.println(nToGuess);
+        System.out.println("ip: " + Inet4Address.getLocalHost().getHostAddress());
+        System.out.println("port: " + portNumber);
         System.out.println("Waiting for user..." );
+
         while (true) {
             Socket clientSocket = serverSocket.accept();
             clients.add(new ServerThread(clientSocket, nToGuess, clients));

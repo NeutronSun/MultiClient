@@ -36,7 +36,8 @@ public class ServerThread implements Runnable {
                     continue;
                 }
                 else if(Integer.parseInt(line) == nToGuess){
-                    alertAll(Integer.parseInt(Thread.currentThread().getName()));
+                    String msg = (userName + " has won the game.");
+                    alertAll(Integer.parseInt(Thread.currentThread().getName()), msg);
                     out.println("You win!!!");
                     System.out.println(userName + ":has won the game.");
                 }
@@ -56,15 +57,19 @@ public class ServerThread implements Runnable {
 
         }catch(IOException e){
             System.out.println(userName + " has left the game");
+            clients.remove(Integer.parseInt(Thread.currentThread().getName()));
+            String msg = (userName + " has left the game\nThere are " + clients.size() + "player left.");
+            alertAll((clients.size()+1), msg);
+
         }
     }
 
-    public void alertAll(int exepted){
+    public void alertAll(int exepted, String msg){
         System.out.println(clients.size());
         int cont = 0;
         for(ServerThread t : clients){
             if(cont != exepted)
-                t.out.println(userName + " ha vinto");
+                t.out.println(msg);
             cont++;
         }
     }
